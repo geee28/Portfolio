@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - Gehna Jain</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --purple: #ab68f8;
+            --purple-dark: #7d0cff;
+            --purple-light: #cf94f1;
+            --black: #0a0a0a;
+            --gray: #1a1a1a;
+            --text: #e5e5e5;
+            --text-dim: #a3a3a3;
+        }
+
+        body {
+            background-color: var(--black);
+            color: var(--text);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated gradient background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(124, 58, 237, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            padding-top: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header/Navigation */
+        header {
+            padding: 2rem 0;
+            position: sticky;
+            top: 0;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            border-bottom: 1px solid rgba(168, 85, 247, 0.2);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--text), var(--purple-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--purple);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--purple);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Blog Header */
+        .blog-header {
+            padding: 4rem 0 2rem;
+            text-align: center;
+        }
+
+        .blog-title {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--text), var(--purple), var(--text));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .blog-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-dim);
+            margin-bottom: 3rem;
+        }
+
+        /* Tab Navigation */
+        .tabs-container {
+            margin: 2rem 0;
+            border-bottom: 2px solid rgba(171, 104, 248, 0.2);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tab {
+            background: transparent;
+            color: var(--text-dim);
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+            font-weight: 600;
+        }
+
+        .tab:hover {
+            color: var(--purple-light);
+        }
+
+        .tab.active {
+            color: var(--purple);
+            border-bottom-color: var(--purple);
+        }
+
+        /* Blog Content */
+        .blog-content {
+            padding: 3rem 0;
+            min-height: 60vh;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .article-card {
+            background: var(--gray);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid rgba(171, 104, 248, 0.2);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .article-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--purple);
+            box-shadow: 0 10px 30px rgba(171, 104, 248, 0.3);
+        }
+
+        .article-date {
+            color: var(--purple);
+            font-size: 0.9rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .article-title {
+            font-size: 1.5rem;
+            color: var(--text);
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+
+        .article-excerpt {
+            color: var(--text-dim);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .article-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .article-tag {
+            background: rgba(171, 104, 248, 0.1);
+            color: var(--purple-light);
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+        }
+
+        .read-more {
+            color: var(--purple);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .read-more:hover {
+            color: var(--purple-light);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            border-top: 1px solid rgba(168, 85, 247, 0.2);
+            color: var(--text-dim);
+            margin-top: 4rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .blog-title {
+                font-size: 2rem;
+            }
+
+            .tabs {
+                gap: 0.2rem;
+            }
+
+            .tab {
+                padding: 0.8rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .articles-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--black);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--purple);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--purple-light);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <a href="index.html" class="logo">Gehna Jain</a>
+            <ul class="nav-links">
+                <li><a href="index.html#home">Home</a></li>
+                <li><a href="index.html#experience">Experience</a></li>
+                <li><a href="index.html#skills">Skills</a></li>
+                <li><a href="index.html#projects">Projects</a></li>
+                <li><a href="blogs.html">Blog</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="blog-header">
+            <div class="container">
+                <h1 class="blog-title">Blog</h1>
+                <p class="blog-subtitle">Thoughts on AI, Data Science, and everything in between</p>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="tabs-container">
+                <div class="tabs">
+                    <button class="tab active" data-tab="all">All Posts</button>
+                    <button class="tab" data-tab="reinforcement-learning">Reinforcement Learning</button>
+                    <button class="tab" data-tab="models-from-scratch">Models from Scratch</button>
+                    <button class="tab" data-tab="cool-stuff">Cool Stuff</button>
+                    <button class="tab" data-tab="tutorials">Tutorials</button>
+                </div>
+            </div>
+
+            <div class="blog-content">
+                <!-- All Posts Tab -->
+                <div class="tab-content active" id="all">
+                    <div class="articles-grid">
+                        <article class="article-card">
+                            <div class="article-date">January 15, 2025</div>
+                            <h3 class="article-title">Deep Q-Networks: From Theory to Practice</h3>
+                            <p class="article-excerpt">
+                                Exploring how DQN revolutionized reinforcement learning and made it possible to play Atari games better than humans. We'll dive into the architecture, replay buffers, and target networks.
+                            </p>
+                            <div class="article-tags">
+                                <span class="article-tag">Reinforcement Learning</span>
+                                <span class="article-tag">Deep Learning</span>
+                            </div>
+                        </article>
+
+                        <article class="article-card">
+                            <div class="article-date">January 10, 2025</div>
+                            <h3 class="article-title">Building a Transformer from Scratch in PyTorch</h3>
+                            <p class="article-excerpt">
+                                Let's implement the famous "Attention is All You Need" paper step by step. We'll build multi-head attention, positional encoding, and the complete transformer architecture without using any pre-built modules.
+                            </p>
+                            <div class="article-tags">
+                                <span class="article-tag">Models from Scratch</span>
+                                <span class="article-tag">NLP</span>
+                            </div>
+                        </article>
+
+                        <article class="article-card">
+                            <div class="article-date">January 5, 2025</div>
+                            <h3 class="article-title">I Built an AI That Generates Memes (And It's Actually Funny)</h3>
+                            <p class="article-excerpt">
+                                What happens when you fine-tune GPT-4 on 10,000 memes? Pure chaos. Here's how I built a meme generator that understands context, humor, and internet culture better than I do.
+                            </p>
+                            <div class="article-tags">
+                                <span class="article-tag">Cool Stuff</span>
+                                <span class="article-tag">LLMs</span>
+                            </div>
+                        </article>
+
+                        <article class="article-card">
+                            <div class="article-date">December 28, 2024</div>
+                            <h3 class="article-title">Policy Gradients Explained (Without the Math Anxiety)</h3>
+                            <p class="article-excerpt">
+                                Understanding REINFORCE, PPO, and A3C without getting lost in equations. We'll use intuitive explanations and visualizations to make sense of these powerful RL algorithms.
+                            </p>
+                            <div class="article-tags">
+                                <span class="article-tag">Reinforcement Learning</span>
+                                <span class="article-tag">Tutorial</span>
+                            </div>
+                        </article>
+
+                        <article class="article-card">
+                            <div class="article-date">December 20, 2024</div>
+                            <h3 class="article-title">Implementing ResNet: Skip Connections That Changed Everything</h3>
+                            <p class="article-excerpt">
+                                Building ResNet from the ground up to understand why skip connections solved the vanishing gradient problem and enabled training of very deep networks. Plus, we'll train it on CIFAR-10.
+                            </p>
+                            <div class="article-tags">
+                                <span class="article-tag">Models from Scratch</span>
+                                <span class="article-tag">Computer Vision</span>
+                            </div>
+                        </article>
+
+                        <article class="article-card">
+                            <div class="article-date">December 15, 2024</div>
+                            <h3 class="article-title">My AI Can Predict When My Coworkers Need Coffee</h3>
+                            <p class="article-excerpt">
+                                A semi-serious project where I trained a model on Slack messages to predict optimal coffee break times. It's surprisingly accurate and slightly creepy. Here's the full story.
+                            </p>
+                            <div class="article-tags">
+                                <span class="article-tag">Cool Stuff</span>
+                                <span class="article-tag">Time Series</span>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+
+                <!-- Reinforcement Learning Tab -->
+                <div class="tab-content" id="reinforcement-learning">
+                    <div class="articles-grid">
+                        <article class="article-card">
+                            <div class="article-date">January 15, 2025</div>
+                            <h3 class="article-title">Deep Q-Networks: From Theory to Practice</h3>
+                            <p class="article-excerpt">
+                                Exploring how DQN revolutionized reinforcement learning and made it possible to play Atari games better than humans. We'll dive into the architecture, replay buffers, and target networks.
+                            </p>
+                            <div class="article-tags">
+                                <span class="article-tag">Reinforcement Learning</span>
+                                <span class="article-tag">Deep Learning</span>
+                            </div>
+                        </article>
+
+                        <article class="article-card">
+                            <div class="article-date">December 28, 2024</div>
+                            <h3 class="article-title">Policy Gradients Explained (Without the Math Anxiety)</h3>
+                            <p class="article-excerpt">
+                                Understanding REINFORCE, PPO, and A3C without getting lost in equations. We'll use intuitive explanations and visualizations to make sense of these powerful RL algorithms.
+                            </p>
+                            <div class="article-tags">
+                                <span class="article-tag">Reinforcement Learning</span>
+                                <span class="article-tag">Tutorial</span>
+                            </div>
+                        </article>
+
+                        <article class="article-card">
+                            <div class="article-date">December 5, 2024</div>
+                            <h3 class="article-title">Actor-Critic Methods: The Best of Both Worlds</h3>
+                            <p class="article-excerpt">
+                                Combining value-based and policy-based methods for more stable and efficient learning. We'll implement A2C and see how it compares to pure policy gradient approaches.
+                            </p>
+                            <div class="article-tags">
+                                <span class="article-tag">Reinforcement Learning</span>
+                                <span class="article-tag">Advanced</span>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+
+                <!-- Models from Scratch Tab -->
+                <div class="tab-content" id="models-from-scratch">
+                    <div class="articles-grid">
+                        <article class="article-card">
+                            <div class="article-date">January 10, 2025</div>
+                            <h3 class="article-title">Building a Transformer from Scratch in PyTorch</h3>
+                            <p class="article-excerpt">
+                                Let's implement the famous "Attention is All You Need" paper step by step. We'll build multi-head attention, positional encoding, and the complete transformer architecture without using any pre-built modules.
+                            </p>
+                            <div class="article-tags">
+                                <span class="article-tag">Models from Scratch</span>
+                                <span class="article-tag">NLP</span>
+                            </div>
+                        </article>
+
+                        <article class="article-card">
+                            <div class="article-date">December 20, 2024</div>
+                            <h3 class="article-title">Implementing ResNet: Skip Connections That Changed Everything</h3>
+                            <p class="article-excerpt">
+                                Building ResNet from the ground up to understand why skip connections solved the vanishing gradient problem and enabled training of very deep networks. Plus, we'll train it on CIFAR-10.
+                            </p>
+                            <div class="article-tags">
+                                <span class="article-tag">Models from Scratch</span>
+                                <span class="article-tag">Computer Vision</span>
+                            </div>
+                        </article>
+
+                        <article class="article-card">
+                            <div class="article-date">November 30, 2024</div>
+                            <h3 class="article-title">LSTM Networks: Understanding the Gates</h3>
+                            <p class="article-excerpt">
+                                Breaking down Long Short-Term Memory networks by implementing each gate from scratch. We'll understand why LSTMs work so well for sequence modeling and time series prediction.
+                            </p>
+                            <div class="article-tags">
+                                <span class="article-tag">Models from Scratch</span>
+                                <span class="article-tag">RNN</span>
+                            </div>
+                        </article>
+
+                        <article class="article-card">
+                            <div class="article-date">November 15, 2024</div>
+                            <h3 class="article-title">Variational Autoencoders: Math and Code</h3>
+                            <p class="article-excerpt">
+                                Implementing VAEs from first principles to understand the reparameterization trick, KL divergence, and how to generate new data. We'll build one for MNIST digit generation.
+                            </p>
+                            <div class="article-tags">
+                                <span class="article-tag">Models from Scratch</span>
+                                <span class="article-tag">Generative AI</span>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+
+                <!-- Cool Stuff Tab -->
+                <div class="tab-content" id="cool-stuff">
+                    <div class="articles-grid">
+                        <article class="article-card">
+                            <div class="article-date">January 5, 2025</div>
+                            <h3 class="article-title">I Built an AI That Generates Memes (And It's Actually Funny)</h3>
+                            <p class="article-excerpt">
+                                What happens when you fine-tune GPT-4 on 10,000 memes? Pure chaos. Here's how I built a meme generator that understands context, humor, and internet culture better than I do.
+                            </p>
+                            <div class="article-tags">
+                                <span class="article-tag">Cool Stuff</span>
+                                <span class="article-tag">LLMs</span>
+                            </div>
+                        </article>
+
+                        <article class="article-card">
+                            <div class="article-date">December 15, 2024</div>
+                            <h3 class="article-title">My AI Can Predict When My Coworkers Need Coffee</h3>
+                            <p class="article-excerpt">
+                                A semi-serious project where I trained a model on Slack messages to predict optimal coffee break times. It's surprisingly accurate and slightly creepy. Here's the full story.
+                            </p>
+                            <div class="article-tags">
+                                <span class="article-tag">Cool Stuff</span>
+                                <span class="article-tag">Time Series</span>
+                            </div>
+                        </article>
+
+                        <article class="article-card">
+                            <div class="article-date">November 25, 2024</div>
+                            <h3 class="article-title">Training an AI to Play Pokemon (It's Smarter Than 10-Year-Old Me)</h3>
+                            <p class="article-excerpt">
+                                Using reinforcement learning to beat Pokemon Red. The AI discovered strategies I never knew existed and beat the Elite Four in record time. Plus battle logs that are hilarious.
+                            </p>
+                            <div class="article-tags">
+                                <span class="article-tag">Cool Stuff</span>
+                                <span class="article-tag">RL</span>
+                            </div>
+                        </article>
+
+                        <article class="article-card">
+                            <div class="article-date">November 10, 2024</div>
+                            <h3 class="article-title">I Made Stable Diffusion Generate My Cat in Historical Paintings</h3>
+                            <p class="article-excerpt">
+                                Fine-tuning Stable Diffusion to insert my cat into famous artworks. From Van Gogh to Picasso, Mr. Whiskers has never looked more distinguished. Tutorial included!
+                            </p>
+                            <div class="article-tags">
+                                <span class="article-tag">Cool Stuff</span>
+                                <span class="article-tag">Diffusion Models</span>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+
+                <!-- Tutorials Tab -->
+                <div class="tab-content" id="tutorials">
+                    <div class="articles-grid">
+                        <article class="article-card">
+                            <div class="article-date">December 28, 2024</div>
+                            <h3 class="article-title">Policy Gradients Explained (Without the Math Anxiety)</h3>
+                            <p class="article-excerpt">
+                                Understanding REINFORCE, PPO, and A3C without getting lost in equations. We'll use intuitive explanations and visualizations to make sense of these powerful RL algorithms.
+                            </p>
+                            <div class="article-tags">
+                                <span class="article-tag">Tutorial</span>
+                                <span class="article-tag">Reinforcement Learning</span>
+                            </div>
+                        </article>
+
+                        <article class="article-card">
+                            <div class="article-date">November 20, 2024</div>
+                            <h3 class="article-title">Complete Guide to Setting Up Your ML Development Environment</h3>
+                            <p class="article-excerpt">
+                                From conda to CUDA, from VSCode to Weights & Biases. Everything you need to set up a professional ML development workflow that actually works. No more dependency hell!
+                            </p>
+                            <div class="article-tags">
+                                <span class="article-tag">Tutorial</span>
+                                <span class="article-tag">MLOps</span>
+                            </div>
+                        </article>
+
+                        <article class="article-card">
+                            <div class="article-date">October 30, 2024</div>
+                            <h3 class="article-title">Debugging Neural Networks: A Practical Guide</h3>
+                            <p class="article-excerpt">
+                                Your model isn't learning? Loss is NaN? Gradients exploding? This comprehensive guide covers every debugging technique I've learned the hard way, so you don't have to.
+                            </p>
+                            <div class="article-tags">
+                                <span class="article-tag">Tutorial</span>
+                                <span class="article-tag">Deep Learning</span>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>© 2025. Gehna Jain. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Tab switching functionality
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetTab = tab.getAttribute('data-tab');
+
+                // Remove active class from all tabs and contents
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+
+                // Add active class to clicked tab and corresponding content
+                tab.classList.add('active');
+                document.getElementById(targetTab).classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
