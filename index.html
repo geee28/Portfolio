@@ -137,6 +137,64 @@
             animation: fadeInUp 1s ease 0.2s backwards;
         }
 
+        .owl-image {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 2rem;
+            animation: fadeInDown 1s ease 0.2s backwards, float 3s ease-in-out infinite;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            outline: none;
+        }
+
+        .owl-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 5px 15px rgba(171, 104, 248, 0.3));
+            display: block;
+            pointer-events: none;
+        }
+
+        .owl-image:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes wiggle {
+            0%, 100% {
+                transform: rotate(0deg);
+            }
+            25% {
+                transform: rotate(-10deg);
+            }
+            75% {
+                transform: rotate(10deg);
+            }
+        }
+
         .hero .description {
             font-size: 1.1rem;
             max-width: 600px;
@@ -623,6 +681,11 @@
                 font-size: 1rem;
             }
 
+            .owl-image {
+                width: 130px;
+                height: 130px;
+            }
+
             .nav-links {
                 gap: 0.8rem;
                 font-size: 0.9rem;
@@ -722,13 +785,15 @@
         <!-- Hero Section -->
         <section id="home" class="hero">
             <div class="container">
+                <div class="owl-image" id="owlImage">
+                    <img src="assets/owlv2.png" alt="Pixelated owl">
+                </div>
                 <h1>Hey, I'm Gehna!</h1>
                 <p class="subtitle"> I love everything AI and Data!</p>
                 <p class="description">
                     Somewhere out there, in the multiverse of data and AI models, I'm piecing things together until they start working - and then acting like that was my plan all along. When I'm not off experimenting, I make cool (debatable) stuff on the internet - sometimes with Python, sometimes with pure stubbornness. </p>
                 <div class="cta-buttons">
                     <a href="#projects" class="btn btn-primary">Check Out My Work</a>
-                    <a href="#contact" class="btn btn-secondary">Let's Chat</a>
                 </div>
                 <div class="hero-social-links">
                     <a href="https://github.com/geee28" title="GitHub" target="_blank">
@@ -957,11 +1022,9 @@
                 <h2 class="section-title">Let's Connect!</h2>
                 <div class="contact-content">
                     <p>
-                        Got a cool project idea? Want to collaborate? Or just want to chat about code, 
-                        models, Colab crashing while training, or why tabs are better than spaces? 
+                        Open to ideas, memes and movie suggestions! 
                     </p>
-                    <p>Hit me up! I promise I don't bite 🙂</p>
-                    <a href="mailto:gehnaj28@gmail.com" class="btn btn-primary">Send Me an Email</a>
+                    <p>Send a ping. I'll ACK 🙂</p>
                     
                     <div class="social-links">
                         <a href="https://github.com/geee28" title="GitHub" target="_blank">
@@ -1027,6 +1090,17 @@
                 }
             });
         });
+
+        // Owl image interactive animation
+        const owlImage = document.getElementById('owlImage');
+        if (owlImage) {
+            owlImage.addEventListener('click', function() {
+                this.style.animation = 'none';
+                setTimeout(() => {
+                    this.style.animation = 'wiggle 0.5s ease, float 3s ease-in-out infinite';
+                }, 10);
+            });
+        }
     </script>
 </body>
 </html>
